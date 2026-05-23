@@ -3,9 +3,9 @@ export default function ContactPage() {
     event.preventDefault();
     const buttonLabel = event.currentTarget.querySelector('.form-submit span');
     if (buttonLabel) {
-      buttonLabel.textContent = "SENT! WE'LL HIT YOU BACK ✓";
+      buttonLabel.textContent = "SENT! WE'LL HIT YOU BACK -";
       window.setTimeout(() => {
-        buttonLabel.textContent = 'SEND INQUIRY →';
+        buttonLabel.textContent = 'SEND INQUIRY ->';
       }, 3000);
     }
   };
@@ -17,28 +17,28 @@ export default function ContactPage() {
           <h1 className="contact-title">HIT<br /><span>US UP</span></h1>
           <div className="contact-methods">
             <a href="https://wa.me/923148005977" className="contact-method">
-              <div className="contact-icon">📱</div>
+              <div className="contact-icon">WA</div>
               <div>
                 <div className="contact-method-title">WHATSAPP</div>
-                <div className="contact-method-sub">Fastest reply · DM to order</div>
+                <div className="contact-method-sub">Fastest reply - DM to order</div>
               </div>
-              <div className="contact-arrow">→</div>
+              <div className="contact-arrow">-></div>
             </a>
-            <a href="https://instagram.com/prelovedkicks" className="contact-method">
-              <div className="contact-icon">📸</div>
+            <a href="https://www.instagram.com/prelovedkick.pk?igsh=MTc4MGdiZXlpZjBzcg==" className="contact-method">
+              <div className="contact-icon">IG</div>
               <div>
                 <div className="contact-method-title">INSTAGRAM</div>
-                <div className="contact-method-sub">@prelovedkicks · DM us</div>
+                <div className="contact-method-sub">@prelovedkick.pk - DM us</div>
               </div>
-              <div className="contact-arrow">→</div>
+              <div className="contact-arrow">-></div>
             </a>
-            <a href="https://facebook.com/prelovedkicks" className="contact-method">
-              <div className="contact-icon">💬</div>
+            <a href="#" className="contact-method">
+              <div className="contact-icon">FB</div>
               <div>
                 <div className="contact-method-title">FACEBOOK</div>
-                <div className="contact-method-sub">Preloved Kicks · Message us</div>
+                <div className="contact-method-sub">Link coming soon</div>
               </div>
-              <div className="contact-arrow">→</div>
+              <div className="contact-arrow">-></div>
             </a>
           </div>
         </div>
@@ -56,7 +56,7 @@ export default function ContactPage() {
               <label className="form-label">What are you looking for?</label>
               <textarea className="form-input" placeholder="e.g. Nike Air Max UK 9, budget Rs. 5000..." required />
             </div>
-            <button type="submit" className="form-submit"><span>SEND INQUIRY →</span></button>
+            <button type="submit" className="form-submit"><span>SEND INQUIRY -></span></button>
           </form>
         </div>
       </div>

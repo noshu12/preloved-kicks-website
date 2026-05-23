@@ -149,7 +149,7 @@ export default function HomePage({ addToCart }) {
             </div>
             <div className="footer-col">
               <h4>Follow</h4>
-              <a href="#"><i>Instagram</i></a>
+              <a href="https://www.instagram.com/prelovedkick.pk?igsh=MTc4MGdiZXlpZjBzcg==" target="_blank" rel="noreferrer"><i>Instagram</i></a>
               <a href="#"><i>Facebook</i></a>
               <a href="#"><i>WhatsApp</i></a>
             </div>
