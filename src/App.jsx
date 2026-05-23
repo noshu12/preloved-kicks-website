@@ -7,14 +7,13 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ProductDetail from './pages/ProductDetail';
 import Tracking from './pages/Tracking';
+import PageTransition from './components/PageTransition';
 
 function formatPrice(price) {
   return `Rs. ${price.toLocaleString('en-PK')}`;
 }
 
 function App() {
-  const [transitionState, setTransitionState] = useState('');
-  const [loadingPageName, setLoadingPageName] = useState('');
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState([]);
   const cursorRef = useRef(null);
@@ -74,33 +73,6 @@ function App() {
     document.title = pageNames[location.pathname] || 'Preloved Kicks';
   }, [location.pathname]);
 
-  // Page transition animation
-  useEffect(() => {
-    const pageNames = {
-      '/': 'HOME',
-      '/shop': 'SHOP',
-      '/about': 'ABOUT',
-      '/tracking': 'TRACK ORDER',
-      '/contact': 'CONTACT',
-    };
-    
-    // Handle product detail routes
-    let pageName = pageNames[location.pathname];
-    if (!pageName && location.pathname.startsWith('/product/')) {
-      pageName = 'PRODUCT';
-    }
-    
-    setLoadingPageName(pageName || 'HOME');
-    setTransitionState('enter');
-    
-    const timer = window.setTimeout(() => {
-      setTransitionState('exit');
-      window.setTimeout(() => setTransitionState(''), 500);
-    }, 500);
-
-    return () => window.clearTimeout(timer);
-  }, [location.pathname]);
-
   const addToCart = (product) => {
     setCart((currentCart) => {
       const existingItem = currentCart.find((item) => item.id === product.id);
@@ -126,13 +98,22 @@ function App() {
     navigate(path);
   };
 
+  const handleWhatsAppCheckout = () => {
+    if (!cart.length) return;
+
+    const itemsText = cart
+      .map((item) => `- ${item.brand} ${item.name} (${item.size}) x${item.quantity} - Rs. ${(item.price * item.quantity).toLocaleString('en-PK')}`)
+      .join('\n');
+
+    const message = `New Order - Preloved Kicks\nItems:\n${itemsText}\nTotal: Rs. ${cartTotal.toLocaleString('en-PK')}\nShipping: Rs. 200`;
+    const whatsappUrl = `https://wa.me/923XXXXXXXXX?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <>
       <div className="cursor" id="cursor" ref={cursorRef} />
       <div className="cursor-ring" id="cursorRing" ref={ringRef} />
-      <div className={`page-transition ${transitionState}`} id="pageTransition">
-        <div className="transition-text">{loadingPageName}</div>
-      </div>
 
       <nav>
         <a href="#" className="nav-logo" onClick={(event) => { event.preventDefault(); navigateTo('/'); }}>
@@ -197,22 +178,32 @@ function App() {
             <span>Total</span>
             <strong>{formatPrice(cartTotal)}</strong>
           </div>
-          <button type="button" className="cart-checkout" disabled={!cart.length}>
-            Checkout
+          <button
+            type="button"
+            className="cart-checkout cart-whatsapp-checkout"
+            disabled={!cart.length}
+            onClick={handleWhatsAppCheckout}
+          >
+            ORDER ON WHATSAPP
+          </button>
+          <button type="button" className="cart-checkout cart-online-disabled" disabled>
+            PAY ONLINE -- COMING SOON
           </button>
         </div>
       </div>
 
-      <main>
-        <Routes>
-          <Route path="/" element={<HomePage addToCart={addToCart} />} />
-          <Route path="/shop" element={<ShopPage addToCart={addToCart} />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/tracking" element={<Tracking />} />
-          <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
-        </Routes>
-      </main>
+      <PageTransition>
+        <main>
+          <Routes>
+            <Route path="/" element={<HomePage addToCart={addToCart} />} />
+            <Route path="/shop" element={<ShopPage addToCart={addToCart} />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/tracking" element={<Tracking />} />
+            <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
+          </Routes>
+        </main>
+      </PageTransition>
     </>
   );
 }

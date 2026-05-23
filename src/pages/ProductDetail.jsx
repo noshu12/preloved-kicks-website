@@ -146,6 +146,8 @@ export default function ProductDetail({ addToCart }) {
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isImageFading, setIsImageFading] = useState(false);
+  const [hasImageError, setHasImageError] = useState(false);
+  const [thumbnailErrors, setThumbnailErrors] = useState({});
   const fadeTimeoutRef = useRef(null);
   const relatedRef = useRef(null);
 
@@ -171,7 +173,13 @@ export default function ProductDetail({ addToCart }) {
 
   useEffect(() => {
     setSelectedImageIndex(0);
+    setHasImageError(false);
+    setThumbnailErrors({});
   }, [product.id]);
+
+  useEffect(() => {
+    setHasImageError(false);
+  }, [selectedImageIndex]);
 
   useEffect(() => {
     return () => {
@@ -227,6 +235,8 @@ export default function ProductDetail({ addToCart }) {
     { id: 6, brand: 'Jordan', name: 'AJ1 Low', price: 6800, size: 'UK 10', tag: '8/10', conditionClass: 'cond-8', color: 'Black/Red' },
     { id: 7, brand: 'Adidas', name: 'Ultraboost 22', price: 3200, size: 'UK 8', tag: '9/10', conditionClass: 'cond-9', color: 'Core Black' },
   ];
+  const selectedImageSrc = galleryImages[selectedImageIndex];
+  const isPlaceholderImage = !selectedImageSrc || selectedImageSrc.toLowerCase().includes('placeholder');
 
   return (
     <div className="product-detail-page">
@@ -234,14 +244,23 @@ export default function ProductDetail({ addToCart }) {
         {/* Left: Image Section */}
         <div className="product-detail-images product-detail-image-entrance">
           <div className="product-detail-main">
-            <img
-              src={galleryImages[selectedImageIndex]}
-              alt={product.name}
-              style={{
-                opacity: isImageFading ? 0 : 1,
-                transition: 'opacity 180ms ease-in-out',
-              }}
-            />
+            {hasImageError || isPlaceholderImage ? (
+              <div className="product-detail-image-fallback" aria-label={`${product.name} placeholder`}>
+                <svg className="shoe-silhouette" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M10,45 C10,45 5,45 5,40 L5,35 C5,35 8,30 15,28 L35,20 C35,20 45,15 55,15 L75,15 C75,15 85,15 90,20 L95,28 C95,28 95,32 90,35 L85,40 C85,40 80,45 70,45 Z M15,28 L15,35 M25,22 L25,35 M35,18 L35,35 M45,16 L45,35 M55,15 L55,35" fill="currentColor" stroke="none" />
+                </svg>
+              </div>
+            ) : (
+              <img
+                src={selectedImageSrc}
+                alt={product.name}
+                onError={() => setHasImageError(true)}
+                style={{
+                  opacity: isImageFading ? 0 : 1,
+                  transition: 'opacity 180ms ease-in-out',
+                }}
+              />
+            )}
             {product.tag && <span className="product-detail-tag">{product.tag}</span>}
           </div>
           <div className="product-detail-thumbnails">
@@ -251,7 +270,21 @@ export default function ProductDetail({ addToCart }) {
                 className={`thumbnail ${selectedImageIndex === index ? 'active' : ''}`}
                 onClick={() => handleThumbnailClick(index)}
               >
-                <img src={image} alt={`${product.name} ${index + 1}`} />
+                {thumbnailErrors[index] || image.toLowerCase().includes('placeholder') ? (
+                  <div className="thumbnail-fallback" aria-label={`${product.name} ${index + 1} placeholder`}>
+                    <svg className="shoe-silhouette" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M10,45 C10,45 5,45 5,40 L5,35 C5,35 8,30 15,28 L35,20 C35,20 45,15 55,15 L75,15 C75,15 85,15 90,20 L95,28 C95,28 95,32 90,35 L85,40 C85,40 80,45 70,45 Z M15,28 L15,35 M25,22 L25,35 M35,18 L35,35 M45,16 L45,35 M55,15 L55,35" fill="currentColor" stroke="none" />
+                    </svg>
+                  </div>
+                ) : (
+                  <img
+                    src={image}
+                    alt={`${product.name} ${index + 1}`}
+                    onError={() =>
+                      setThumbnailErrors((current) => ({ ...current, [index]: true }))
+                    }
+                  />
+                )}
               </button>
             ))}
           </div>

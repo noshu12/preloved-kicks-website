@@ -580,16 +580,13 @@ nav {
   transform: scale(1.04);
 }
 
-.product-placeholder {
-  font-family: var(--font-display);
-  font-size: 80px;
-  opacity: 0.12;
-  letter-spacing: 2px;
+.shoe-silhouette {
+  width: 80px;
   color: var(--white);
-}
-
-.product-card.featured .product-placeholder {
-  font-size: 140px;
+  opacity: 0.15;
+  transform-origin: center;
+  animation: shoeFloat 2s ease-in-out infinite;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .product-tag,
@@ -864,16 +861,10 @@ nav {
   z-index: 2;
 }
 
-.shoe-emoji {
-  font-size: 64px;
-  filter: grayscale(0.3);
-  transition: transform 0.4s, filter 0.4s;
-  transform: rotate(-15deg);
-}
-
-.shop-card:hover .shoe-emoji {
-  transform: rotate(-5deg) scale(1.1);
-  filter: grayscale(0);
+.product-card:hover .shoe-silhouette,
+.shop-card:hover .shoe-silhouette {
+  opacity: 0.25;
+  transform: rotate(-10deg);
 }
 
 .shop-card-info {
@@ -1507,6 +1498,20 @@ footer {
   cursor: not-allowed;
 }
 
+.cart-whatsapp-checkout {
+  background: #25d366;
+}
+
+.cart-whatsapp-checkout:enabled:hover {
+  background: #1fad56;
+}
+
+.cart-online-disabled {
+  background: #cc0000;
+  opacity: 0.5 !important;
+  cursor: not-allowed;
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -1739,13 +1744,13 @@ footer {
   }
 
   .nav-links {
-    gap: 8px;
+    gap: 7px;
   }
 
   .nav-links a,
   .nav-cart {
-    font-size: 9px;
-    letter-spacing: 0.8px;
+    font-size: 8.5px;
+    letter-spacing: 0.6px;
   }
 
   .nav-cta {
@@ -1789,11 +1794,24 @@ footer {
   }
 
   .hero-title {
+    font-size: clamp(50px, 15.2vw, 72px);
     line-height: 0.84;
   }
 
   .hero-sub {
     max-width: 100%;
+  }
+
+  .hero-actions {
+    margin-top: 28px;
+    gap: 10px;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    padding: 14px 20px;
+    font-size: 16px;
+    letter-spacing: 2px;
   }
 
   .footer-logo {
@@ -1853,6 +1871,131 @@ footer {
   gap: 20px;
 }
 
+.page-transition-content.incoming {
+  animation: incomingPageSlide 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
+}
+
+.shoe-transition-overlay {
+  position: fixed;
+  inset: 0;
+  background: #cc0000;
+  pointer-events: none;
+  z-index: 320;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.shoe-transition-overlay.active {
+  visibility: visible;
+  animation: transitionOverlayFade 0.8s ease forwards;
+}
+
+.transition-shoe-icon {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 72px;
+  color: #fff;
+  transform: translateX(-50%) translateY(0) rotate(-10deg);
+  opacity: 0;
+}
+
+.shoe-transition-overlay.active .transition-shoe-icon {
+  animation: flyShoeUp 0.55s cubic-bezier(0.2, 0.75, 0.2, 1) 0.08s forwards;
+}
+
+.transition-destination-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(56px, 9vw, 132px);
+  letter-spacing: 4px;
+  color: #fff;
+  opacity: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.shoe-transition-overlay.active .transition-destination-text {
+  animation: transitionLabelIn 0.8s ease forwards;
+}
+
+@keyframes flyShoeUp {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(-12deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(-92vh) rotate(-4deg);
+    opacity: 1;
+  }
+}
+
+@keyframes transitionOverlayFade {
+  0% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes incomingPageSlide {
+  from {
+    transform: translateY(54px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes transitionLabelIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 22px));
+  }
+
+  22% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 10px));
+  }
+}
+
+@keyframes shoeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
 .product-detail-image-entrance {
   opacity: 0;
   animation: productDetailSlideFromLeft 0.8s ease-out 0.08s forwards;
@@ -1872,6 +2015,19 @@ footer {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.product-detail-image-fallback {
+  width: 100%;
+  height: 100%;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-detail-image-fallback .shoe-silhouette {
+  width: 80px;
 }
 
 .product-detail-tag {
@@ -1911,6 +2067,19 @@ footer {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.thumbnail-fallback {
+  width: 100%;
+  height: 100%;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail-fallback .shoe-silhouette {
+  width: 42px;
 }
 
 .thumbnail:hover {
