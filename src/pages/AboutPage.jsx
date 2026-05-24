@@ -1,6 +1,15 @@
+import { Helmet } from 'react-helmet-async';
+
 export default function AboutPage() {
   return (
     <>
+      <Helmet>
+        <title>About Us | Preloved Kicks</title>
+        <meta
+          name="description"
+          content="Two guys from Karachi hunting the best pre-owned sneakers so you don't have to."
+        />
+      </Helmet>
       <div className="about-hero">
         <div>
           <h1 className="about-title">HOW<br /><span>WE WORK</span></h1>

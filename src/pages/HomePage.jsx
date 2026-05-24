@@ -1,11 +1,12 @@
 import { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const featuredProducts = [
-  { id: 1, brand: 'Nike', name: 'Air Max 90', price: 4500, size: 'UK 9', tag: 'NEW DROP', condition: '9/10', color: 'White/Red' },
-  { id: 2, brand: 'Jordan', name: 'AJ1 Low', price: 6800, size: 'UK 10', tag: 'HOT', condition: '8/10', color: 'Black/Red' },
-  { id: 3, brand: 'Adidas', name: 'Ultraboost 22', price: 3200, size: 'UK 8', tag: '', condition: '9/10', color: 'Core Black' },
-  { id: 4, brand: 'New Balance', name: '990v5', price: 7500, size: 'UK 9.5', tag: 'GRAIL', condition: '7/10', color: 'Grey/Silver' },
+  { id: 1, brand: 'Nike', name: 'Air Max 90', price: 4500, size: 'UK 9', tag: 'NEW DROP', condition: '9/10', color: 'White/Red', stock: 3 },
+  { id: 2, brand: 'Jordan', name: 'AJ1 Low', price: 6800, size: 'UK 10', tag: 'HOT', condition: '8/10', color: 'Black/Red', stock: 1 },
+  { id: 3, brand: 'Adidas', name: 'Ultraboost 22', price: 3200, size: 'UK 8', tag: '', condition: '9/10', color: 'Core Black', stock: 0 },
+  { id: 4, brand: 'New Balance', name: '990v5', price: 7500, size: 'UK 9.5', tag: 'GRAIL', condition: '7/10', color: 'Grey/Silver', stock: 2 },
 ];
 
 function formatPrice(price) {
@@ -38,6 +39,17 @@ export default function HomePage({ addToCart }) {
 
   return (
     <>
+      <Helmet>
+        <title>Preloved Kicks | Thrifted Sneakers in Karachi</title>
+        <meta
+          name="description"
+          content="Buy authentic pre-owned sneakers in Karachi. Nike, Jordan, Adidas and more. Every pair verified. Ships PK-wide."
+        />
+        <meta
+          name="keywords"
+          content="thrift sneakers karachi, preloved shoes pakistan, buy used sneakers, nike adidas jordan karachi"
+        />
+      </Helmet>
       <section className="hero" ref={heroRef}>
         <div className="hero-bg" />
         <div className="hero-ticker">PRELOVED KICKS · PRELOVED KICKS · PRELOVED KICKS · PRELOVED KICKS · </div>
@@ -96,7 +108,7 @@ export default function HomePage({ addToCart }) {
         <div className="product-grid reveal">
           {featuredProducts.map((product, index) => (
             <div
-              className={`product-card ${index === 0 ? 'featured' : ''}`}
+              className={`product-card ${index === 0 ? 'featured' : ''} ${product.stock === 0 ? 'sold-out-card' : ''}`}
               key={product.id}
               onClick={() => navigate(`/product/${product.id}`)}
               style={{ cursor: 'pointer' }}
@@ -108,6 +120,9 @@ export default function HomePage({ addToCart }) {
                   <path d="M10 45h78c0 0-2 6-8 6H18c-6 0-8-6-8-6z" fill="currentColor" />
                   <path d="M60 20l8 9h8c-2-3-5-6-9-8l-7-1z" fill="currentColor" />
                 </svg>
+                {product.stock === 1 && <span className="stock-badge stock-low">ONLY 1 LEFT</span>}
+                {product.stock === 0 && <span className="stock-badge stock-out">SOLD OUT</span>}
+                <span className="authentic-badge">✓ AUTHENTIC</span>
                 {product.tag ? <span className="product-tag">{product.tag}</span> : null}
               </div>
               <div className="product-info">
@@ -151,7 +166,7 @@ export default function HomePage({ addToCart }) {
               <h4>Follow</h4>
               <a href="https://www.instagram.com/prelovedkick.pk?igsh=MTc4MGdiZXlpZjBzcg==" target="_blank" rel="noreferrer"><i>Instagram</i></a>
               <a href="#"><i>Facebook</i></a>
-              <a href="#"><i>WhatsApp</i></a>
+              <a href="https://wa.me/923148005977" target="_blank" rel="noreferrer"><i>WhatsApp</i></a>
             </div>
             <div className="footer-col">
               <h4>Location</h4>

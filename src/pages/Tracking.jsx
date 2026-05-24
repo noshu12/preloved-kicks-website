@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 const dummyOrder = {
   orderId: 'PK-2025-001',
@@ -72,6 +73,13 @@ export default function Tracking() {
 
   return (
     <main className="tracking-page">
+      <Helmet>
+        <title>Track Order | Preloved Kicks</title>
+        <meta
+          name="description"
+          content="Track your Preloved Kicks order status in real time using your Order ID."
+        />
+      </Helmet>
       <div className="tracking-wrap">
         {!isTracking && !isLoading ? (
           <section className="tracking-search">

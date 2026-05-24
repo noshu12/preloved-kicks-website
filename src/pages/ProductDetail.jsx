@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import ProductCard from '../components/ProductCard';
+import { Helmet } from 'react-helmet-async';
 
 // Comprehensive product database
 const productDatabase = {
@@ -235,11 +236,41 @@ export default function ProductDetail({ addToCart }) {
     { id: 6, brand: 'Jordan', name: 'AJ1 Low', price: 6800, size: 'UK 10', tag: '8/10', conditionClass: 'cond-8', color: 'Black/Red' },
     { id: 7, brand: 'Adidas', name: 'Ultraboost 22', price: 3200, size: 'UK 8', tag: '9/10', conditionClass: 'cond-9', color: 'Core Black' },
   ];
+  const reviews = [
+    {
+      stars: 5,
+      text: 'Condition was exactly as described. Packed really well, arrived fast.',
+      name: 'Hamza',
+      city: 'Karachi',
+      date: '2 weeks ago',
+    },
+    {
+      stars: 5,
+      text: 'Authentic pair, great price. Will definitely order again.',
+      name: 'Usman',
+      city: 'Lahore',
+      date: '1 month ago',
+    },
+    {
+      stars: 4,
+      text: 'Good condition, slight crease on toe box but expected for the price.',
+      name: 'Ali',
+      city: 'Islamabad',
+      date: '3 weeks ago',
+    },
+  ];
   const selectedImageSrc = galleryImages[selectedImageIndex];
   const isPlaceholderImage = !selectedImageSrc || selectedImageSrc.toLowerCase().includes('placeholder');
 
   return (
     <div className="product-detail-page">
+      <Helmet>
+        <title>{`${product.name} | Preloved Kicks`}</title>
+        <meta
+          name="description"
+          content={`${product.brand} ${product.name} in ${product.condition} condition. Size ${product.size}. Only Rs.${product.price}`}
+        />
+      </Helmet>
       <div className="product-detail-container">
         {/* Left: Image Section */}
         <div className="product-detail-images product-detail-image-entrance">
@@ -354,6 +385,39 @@ export default function ProductDetail({ addToCart }) {
           </div>
         </div>
       </div>
+
+      <section className="product-reviews-section">
+        <div className="product-reviews-header">
+          <h2 className="product-reviews-title">WHAT THEY SAY</h2>
+          <div className="product-reviews-overall">
+            <div className="product-reviews-stars" aria-label="4.8 out of 5 stars">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <span className="product-reviews-rating">4.8 / 5</span>
+            <span className="product-reviews-count">(12 reviews)</span>
+          </div>
+        </div>
+
+        <div className="product-reviews-grid">
+          {reviews.map((review) => (
+            <article className="review-card" key={`${review.name}-${review.date}`}>
+              <div className="review-stars" aria-label={`${review.stars} out of 5 stars`}>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <span key={index}>{index < review.stars ? '★' : '☆'}</span>
+                ))}
+              </div>
+              <p className="review-text">{review.text}</p>
+              <div className="review-meta">
+                <span className="review-name">{review.name}</span>
+                <span className="review-dot">•</span>
+                <span className="review-city">{review.city}</span>
+                <span className="review-dot">•</span>
+                <span className="review-date">{review.date}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="related-products-section reveal" ref={relatedRef}>
         <div

@@ -1,3 +1,5 @@
+import { Helmet } from 'react-helmet-async';
+
 export default function ContactPage() {
   const handleFormSubmit = (event) => {
     event.preventDefault();
@@ -12,6 +14,13 @@ export default function ContactPage() {
 
   return (
     <>
+      <Helmet>
+        <title>Contact | Preloved Kicks</title>
+        <meta
+          name="description"
+          content="Get in touch with Preloved Kicks on WhatsApp, Instagram or Facebook."
+        />
+      </Helmet>
       <div className="contact-wrap">
         <div>
           <h1 className="contact-title">HIT<br /><span>US UP</span></h1>
@@ -41,6 +50,9 @@ export default function ContactPage() {
               <div className="contact-arrow">-></div>
             </a>
           </div>
+          <p className="contact-method-sub">
+            All sales are final. Every pair is honestly graded and photographed before listing. If you have any concerns about your order contact us on WhatsApp within 24 hours of delivery.
+          </p>
         </div>
         <div>
           <form className="contact-form" onSubmit={handleFormSubmit}>

@@ -6,10 +6,11 @@ function formatPrice(price) {
 
 export default function ProductCard({ product, addToCart }) {
   const navigate = useNavigate();
+  const isSoldOut = product.stock === 0;
 
   return (
     <div
-      className="shop-card"
+      className={`shop-card ${isSoldOut ? 'sold-out-card' : ''}`}
       onClick={() => navigate(`/product/${product.id}`)}
       style={{ cursor: 'pointer' }}
     >
@@ -20,6 +21,9 @@ export default function ProductCard({ product, addToCart }) {
           <path d="M10 45h78c0 0-2 6-8 6H18c-6 0-8-6-8-6z" fill="currentColor" />
           <path d="M60 20l8 9h8c-2-3-5-6-9-8l-7-1z" fill="currentColor" />
         </svg>
+        {product.stock === 1 && <span className="stock-badge stock-low">ONLY 1 LEFT</span>}
+        {product.stock === 0 && <span className="stock-badge stock-out">SOLD OUT</span>}
+        <span className="authentic-badge">✓ AUTHENTIC</span>
         <span className={`condition-badge ${product.conditionClass}`}>{product.tag}</span>
       </div>
       <div className="shop-card-info">
@@ -32,8 +36,10 @@ export default function ProductCard({ product, addToCart }) {
             <button
               type="button"
               className="shop-action"
+              disabled={isSoldOut}
               onClick={(e) => {
                 e.stopPropagation();
+                if (isSoldOut) return;
                 addToCart(product);
               }}
             >
