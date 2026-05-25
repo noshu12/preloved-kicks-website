@@ -1,5 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import { collection, getDocs, limit, query } from 'firebase/firestore';
+import { db } from '../firebase';
 import ProductCard from '../components/ProductCard';
 import { Helmet } from 'react-helmet-async';
 
@@ -149,6 +151,7 @@ export default function ProductDetail({ addToCart }) {
   const [isImageFading, setIsImageFading] = useState(false);
   const [hasImageError, setHasImageError] = useState(false);
   const [thumbnailErrors, setThumbnailErrors] = useState({});
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const fadeTimeoutRef = useRef(null);
   const relatedRef = useRef(null);
 
@@ -173,6 +176,7 @@ export default function ProductDetail({ addToCart }) {
   const conditionDetails = getConditionDetails(product.condition);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setSelectedImageIndex(0);
     setHasImageError(false);
     setThumbnailErrors({});
@@ -211,6 +215,30 @@ export default function ProductDetail({ addToCart }) {
     return () => observer.disconnect();
   }, [product.id]);
 
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      try {
+        const q = query(
+          collection(db, 'products'),
+          limit(10)
+        );
+        const querySnapshot = await getDocs(q);
+        const allProducts = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        // Filter out the current product and limit to 3
+        const filtered = allProducts.filter((p) => p.id !== id).slice(0, 3);
+        setRelatedProducts(filtered);
+      } catch (error) {
+        console.error('Error fetching related products:', error);
+        setRelatedProducts([]);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, [id]);
+
   const handleThumbnailClick = (index) => {
     if (index === selectedImageIndex) return;
     setIsImageFading(true);
@@ -231,11 +259,6 @@ export default function ProductDetail({ addToCart }) {
     window.open(whatsappUrl, '_blank');
   };
 
-  const relatedProducts = [
-    { id: 5, brand: 'Nike', name: 'Air Max 90', price: 4500, size: 'UK 9', tag: '9/10', conditionClass: 'cond-9', color: 'White/Red' },
-    { id: 6, brand: 'Jordan', name: 'AJ1 Low', price: 6800, size: 'UK 10', tag: '8/10', conditionClass: 'cond-8', color: 'Black/Red' },
-    { id: 7, brand: 'Adidas', name: 'Ultraboost 22', price: 3200, size: 'UK 8', tag: '9/10', conditionClass: 'cond-9', color: 'Core Black' },
-  ];
   const reviews = [
     {
       stars: 5,

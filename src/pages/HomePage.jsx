@@ -1,13 +1,8 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { collection, getDocs, limit, query } from 'firebase/firestore';
+import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-
-const featuredProducts = [
-  { id: 1, brand: 'Nike', name: 'Air Max 90', price: 4500, size: 'UK 9', tag: 'NEW DROP', condition: '9/10', color: 'White/Red', stock: 3 },
-  { id: 2, brand: 'Jordan', name: 'AJ1 Low', price: 6800, size: 'UK 10', tag: 'HOT', condition: '8/10', color: 'Black/Red', stock: 1 },
-  { id: 3, brand: 'Adidas', name: 'Ultraboost 22', price: 3200, size: 'UK 8', tag: '', condition: '9/10', color: 'Core Black', stock: 0 },
-  { id: 4, brand: 'New Balance', name: '990v5', price: 7500, size: 'UK 9.5', tag: 'GRAIL', condition: '7/10', color: 'Grey/Silver', stock: 2 },
-];
 
 function formatPrice(price) {
   return `Rs. ${price.toLocaleString('en-PK')}`;
@@ -16,6 +11,31 @@ function formatPrice(price) {
 export default function HomePage({ addToCart }) {
   const navigate = useNavigate();
   const heroRef = useRef(null);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const q = query(
+          collection(db, 'products'),
+          limit(4)
+        );
+        const querySnapshot = await getDocs(q);
+        const products = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setFeaturedProducts(products);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const revealItems = document.querySelectorAll('.reveal');
@@ -105,8 +125,14 @@ export default function HomePage({ addToCart }) {
           <h2 className="section-title">FRESH<br /><span>DROPS</span></h2>
           <a href="#" className="section-link" onClick={(event) => { event.preventDefault(); navigate('/shop'); }}>View All →</a>
         </div>
-        <div className="product-grid reveal">
-          {featuredProducts.map((product, index) => (
+        {loading ? (
+          <div className="loading-state">
+            <div className="loading-spinner" />
+            <p className="loading-text">LOADING DROPS...</p>
+          </div>
+        ) : (
+          <div className="product-grid reveal">
+            {featuredProducts.map((product, index) => (
             <div
               className={`product-card ${index === 0 ? 'featured' : ''} ${product.stock === 0 ? 'sold-out-card' : ''}`}
               key={product.id}
@@ -146,6 +172,7 @@ export default function HomePage({ addToCart }) {
             </div>
           ))}
         </div>
+        )}
       </section>
 
       <footer>

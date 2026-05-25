@@ -1,15 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 import ProductCard from '../components/ProductCard';
 import { Helmet } from 'react-helmet-async';
-
-const shopProducts = [
-  { id: 5, brand: 'Nike', name: 'Air Max 90', price: 4500, size: 'UK 9', tag: '9/10', conditionClass: 'cond-9', color: 'White/Red', stock: 3 },
-  { id: 6, brand: 'Jordan', name: 'AJ1 Low', price: 6800, size: 'UK 10', tag: '8/10', conditionClass: 'cond-8', color: 'Black/Red', stock: 1 },
-  { id: 7, brand: 'Adidas', name: 'Ultraboost 22', price: 3200, size: 'UK 8', tag: '9/10', conditionClass: 'cond-9', color: 'Core Black', stock: 0 },
-  { id: 8, brand: 'New Balance', name: '990v5', price: 7500, size: 'UK 9.5', tag: '7/10', conditionClass: 'cond-7', color: 'Grey/Silver', stock: 2 },
-  { id: 9, brand: 'Puma', name: 'Suede Classic', price: 2800, size: 'UK 8', tag: '8/10', conditionClass: 'cond-8', color: 'Navy/White', stock: 1 },
-  { id: 10, brand: 'Nike', name: 'Air Force 1', price: 5200, size: 'UK 9', tag: '9/10', conditionClass: 'cond-9', color: 'Triple White', stock: 4 },
-];
 
 const initialFilters = {
   brand: [
@@ -34,6 +27,36 @@ const initialFilters = {
 
 export default function ShopPage({ addToCart }) {
   const [filters, setFilters] = useState(initialFilters);
+  const [shopProducts, setShopProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'products'));
+        const products = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setShopProducts(products);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="loading-state">
+        <div className="loading-spinner" />
+        <p className="loading-text">LOADING DROPS...</p>
+      </div>
+    );
+  }
 
   const toggleFilter = (groupName, index) => {
     setFilters((currentFilters) => ({
