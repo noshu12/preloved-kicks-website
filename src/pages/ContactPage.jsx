@@ -41,11 +41,11 @@ export default function ContactPage() {
               </div>
               <div className="contact-arrow">-></div>
             </a>
-            <a href="#" className="contact-method">
+            <a href="https://www.facebook.com/share/1NBZrGmNfB/" target="_blank" rel="noreferrer" className="contact-method">
               <div className="contact-icon">FB</div>
               <div>
                 <div className="contact-method-title">FACEBOOK</div>
-                <div className="contact-method-sub">Link coming soon</div>
+                <div className="contact-method-sub">Send us a message</div>
               </div>
               <div className="contact-arrow">-></div>
             </a>

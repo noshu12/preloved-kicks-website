@@ -161,11 +161,12 @@ export default function HomePage({ addToCart }) {
               <a href="#" onClick={(event) => { event.preventDefault(); navigate('/shop'); }}>Shop</a>
               <a href="#" onClick={(event) => { event.preventDefault(); navigate('/about'); }}>About</a>
               <a href="#" onClick={(event) => { event.preventDefault(); navigate('/contact'); }}>Contact</a>
+              <a href="#" onClick={(event) => { event.preventDefault(); navigate('/faq'); }}>FAQ</a>
             </div>
             <div className="footer-col">
               <h4>Follow</h4>
               <a href="https://www.instagram.com/prelovedkick.pk?igsh=MTc4MGdiZXlpZjBzcg==" target="_blank" rel="noreferrer"><i>Instagram</i></a>
-              <a href="#"><i>Facebook</i></a>
+              <a href="https://www.facebook.com/share/1NBZrGmNfB/" target="_blank" rel="noreferrer"><i>Facebook</i></a>
               <a href="https://wa.me/923148005977" target="_blank" rel="noreferrer"><i>WhatsApp</i></a>
             </div>
             <div className="footer-col">

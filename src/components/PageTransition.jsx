@@ -11,6 +11,7 @@ export default function PageTransition({ children }) {
     '/shop': 'SHOP',
     '/about': 'ABOUT',
     '/contact': 'CONTACT',
+    '/faq': 'FAQ',
     '/tracking': 'TRACK ORDER',
   };
   const destinationLabel = location.pathname.startsWith('/product/')

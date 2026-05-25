@@ -7,6 +7,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ProductDetail from './pages/ProductDetail';
 import Tracking from './pages/Tracking';
+import FAQ from './pages/FAQ';
 import PageTransition from './components/PageTransition';
 
 function formatPrice(price) {
@@ -297,6 +298,7 @@ function App() {
             <Route path="/shop" element={<ShopPage addToCart={addToCart} />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/tracking" element={<Tracking />} />
             <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
           </Routes>
