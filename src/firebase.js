@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB2VPRargMjLiSioJ5HcktddlJAIkRYMOA",
-  authDomain: "preloved-kicks.firebaseapp.com",
-  projectId: "preloved-kicks",
-  storageBucket: "preloved-kicks.firebasestorage.app",
-  messagingSenderId: "867892948191",
-  appId: "1:867892948191:web:c8bc503ecb91d1d3f94d6a"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
 const app = initializeApp(firebaseConfig)
