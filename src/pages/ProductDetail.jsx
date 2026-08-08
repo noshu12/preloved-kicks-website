@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { collection, getDocs, limit, query } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, limit, query } from 'firebase/firestore';
 import { db } from '../firebase';
 import ProductCard from '../components/ProductCard';
 import { Helmet } from 'react-helmet-async';
@@ -139,9 +139,29 @@ const productDatabase = {
   },
 };
 
+const normalizeProduct = (rawProduct, fallbackProduct) => {
+  if (!rawProduct) return fallbackProduct;
+
+  const rawImages = Array.isArray(rawProduct.images)
+    ? rawProduct.images
+    : rawProduct.images
+      ? [rawProduct.images]
+      : rawProduct.image
+        ? [rawProduct.image]
+        : rawProduct.imageUrl
+          ? [rawProduct.imageUrl]
+        : [];
+
+  return {
+    ...fallbackProduct,
+    ...rawProduct,
+    images: rawImages,
+  };
+};
+
 export default function ProductDetail({ addToCart }) {
   const { id } = useParams();
-  const product = productDatabase[id] || productDatabase[1];
+  const [product, setProduct] = useState(() => productDatabase[id] || productDatabase[1]);
   const galleryImages =
     product.images.length >= 3
       ? product.images.slice(0, 3)
@@ -181,6 +201,27 @@ export default function ProductDetail({ addToCart }) {
     setHasImageError(false);
     setThumbnailErrors({});
   }, [product.id]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const snapshot = await getDoc(doc(db, 'products', id));
+
+        if (snapshot.exists()) {
+          const fallbackProduct = productDatabase[id] || productDatabase[1];
+          setProduct(normalizeProduct({ id: snapshot.id, ...snapshot.data() }, fallbackProduct));
+          return;
+        }
+
+        setProduct(productDatabase[id] || productDatabase[1]);
+      } catch (error) {
+        console.error('Error fetching product detail:', error);
+        setProduct(productDatabase[id] || productDatabase[1]);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   useEffect(() => {
     setHasImageError(false);
@@ -228,7 +269,10 @@ export default function ProductDetail({ addToCart }) {
           ...doc.data(),
         }));
         // Filter out the current product and limit to 3
-        const filtered = allProducts.filter((p) => p.id !== id).slice(0, 3);
+        const filtered = allProducts
+          .filter((p) => p.id !== id)
+          .map((p) => normalizeProduct(p, p))
+          .slice(0, 3);
         setRelatedProducts(filtered);
       } catch (error) {
         console.error('Error fetching related products:', error);

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 function formatPrice(price) {
   if (price === undefined || price === null || isNaN(price)) return 'Rs. 0';
@@ -8,11 +9,12 @@ function formatPrice(price) {
 export default function ProductCard({ product, addToCart }) {
   const navigate = useNavigate();
   const isSoldOut = product?.stock === 0;
+  const [imageError, setImageError] = useState(false);
 
   // Extract primary image URL safely from array or string
   const imageUrl = Array.isArray(product?.images) 
     ? product.images[0] 
-    : (product?.images || product?.image);
+    : (product?.images || product?.image || product?.imageUrl);
 
   return (
     <div
@@ -21,12 +23,13 @@ export default function ProductCard({ product, addToCart }) {
       style={{ cursor: 'pointer' }}
     >
       <div className="shop-img">
-        {imageUrl ? (
+        {imageUrl && !imageError ? (
           <img 
             src={imageUrl} 
             alt={product?.name || 'Shoe Image'} 
             className="product-card-image"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={() => setImageError(true)}
           />
         ) : (
           <svg className="shoe-silhouette" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
